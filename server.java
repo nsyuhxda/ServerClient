@@ -17,7 +17,7 @@ public class Server
             server = new ServerSocket(port); 
             System.out.println("Server begin"); 
   
-            System.out.println("Deng ni ..."); 
+            System.out.println("Waiting for connection from client"); 
   
             socket = server.accept(); 
             System.out.println("Ni jieshoule"); 
