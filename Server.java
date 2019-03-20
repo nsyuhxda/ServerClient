@@ -20,7 +20,7 @@ public class Server
             System.out.println("Waiting for connection from client"); 
   
             socket = server.accept(); 
-            System.out.println("Ni jieshoule"); 
+            System.out.println("Successfully connected"); 
   
             // takes input from the client socket 
             in = new DataInputStream( 
@@ -42,7 +42,7 @@ public class Server
                     System.out.println(i); 
                 } 
             } 
-            System.out.println("Guanbi lianjie"); 
+            System.out.println("Connection closed"); 
   
             // close connection 
             socket.close(); 
