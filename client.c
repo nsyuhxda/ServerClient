@@ -10,7 +10,7 @@
 int main(int argc, char const *argv[]) 
 { 
     struct sockaddr_in address; 
-    int sock = 0, valread; 
+    int sock = 0; 
     struct sockaddr_in serv_addr; 
     char *hello = "Hello from client"; 
     char buffer[1024] = {0}; 
@@ -38,8 +38,6 @@ int main(int argc, char const *argv[])
         return -1; 
     } 
     send(sock , hello , strlen(hello) , 0 ); 
-    printf("Your message is delivered!\n"); 
-    valread = read( sock , buffer, 1024); 
-    printf("%s\n",buffer ); 
+    printf("Your message is delivered!\n");  
     return 0; 
 } 
