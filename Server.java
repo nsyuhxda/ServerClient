@@ -1,6 +1,6 @@
 import java.io.*;
 import java.net.*;
-public class server
+class server
 {
 public static void main(String[] args)throws Exception
 {
