@@ -10,7 +10,7 @@ class Server
 
   {
 
-     Socket sock = new Socket("192.168.40.132", 9706);
+     Socket sock = new Socket("192.168.47.128", 9706);
 
                                // reading from keyboard (keyRead object)
 
