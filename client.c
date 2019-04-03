@@ -4,42 +4,32 @@
 #include <netinet/in.h> 
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <string.h> 
-#define PORT 8080 
-   
-int main(int argc, char const *argv[]) 
+#include <sys/types.h>
+
+int main()
 { 
-    struct sockaddr_in address; 
-    int sock = 0, valread; 
-    struct sockaddr_in serv_addr; 
-    char *hello = "Hello from client"; 
-    char buffer[1024] = {0}; 
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
-    { 
-        printf("\n Socket menghadapi kesulitan \n"); 
-        return -1; 
-    } 
+   char server_msg [256]="Hi";
+   int net_socket;
+   net_socket = socket (AF_INET,SOCK,STREAM,0);
    
-    memset(&serv_addr, '0', sizeof(serv_addr)); 
+   struct sockaddr_in server_address;
+   server_address.sin_family=AF_INET;
+   server_address.sin_port=htons(8080);
+   server_address.sin_addr.s_addr=ip address;
    
-    serv_addr.sin_family = AF_INET; 
-    serv_addr.sin_port = htons(PORT); 
-       
-    // Convert IPv4 and IPv6 addresses from text to binary form 
-    if(inet_pton(AF_INET, "192.168.47.128", &serv_addr.sin_addr)<=0)  
-    { 
-        printf("\nInvalid address/ Address not supported \n"); 
-        return -1; 
-    } 
+   int status=connect(net_socket,(struct sockaddr *) &server_address, sizeof (server_address));
+   if (status== -1)
+{ 
+    println ("There was an error %s\n");
+}
+
+   send (net_socket,server_msg,sizeof(server_msg), 0);
    
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) 
-    { 
-        printf("\nConnection Failed \n"); 
-        return -1; 
-    } 
-    send(sock , hello , strlen(hello) , 0 ); 
-    printf("Assalammualaikum...\n"); 
-    valread = read( sock , buffer, 1024); 
-    printf("%s\n",buffer ); 
+   char server_response[256];
+   recv(net_socket, &server_response, sizeof(server_response),0);
+   
+   println ("Server message : %s\n", server_response);
+   close(net_socket);
+   
     return 0; 
 } 
