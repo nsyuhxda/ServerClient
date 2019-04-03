@@ -1,33 +1,23 @@
 import java.io.*;
 import java.net.*;
-class Server
+public class Server
 {
 public static void main(String[] args)throws Exception
 {
-ServerSocket serversocket = new ServerSocket(8080);
-System.out.println("Server is ready!");
-Socket sock = serversocket.accept();
-System.out.println("Waalaikummussalam");
+ServerSocket Syuda = new ServerSocket(8080);
+Socket s = Syuda.accept();
+    System.out.println("Client connected");
 
-BufferedReader keyRead = new BufferedReader(new 
-InputStreamReader(System.in));
-OutputStream ostream = sock.getOutputStream();
-PrintWriter pwrite = new PrintWriter(ostream,true);
+InputStreamReader gt = new InputStreamReader (s.getInputStream());
+BufferedReader ot = new BufferedReader(gt);
 
-InputStream istream = sock.getInputStream();
-BufferedReader receiveRead = new BufferedReader(new 
-InputStreamReader(istream));
-
-String receiveMessage,sendMessage;
-while(true)
-{
-if((receiveMessage=receiveRead.readLine())!=null)
-{
-System.out.println(receiveMessage);
-}
-sendMessage = keyRead.readLine();
-pwrite.println(sendMessage);
-pwrite.flush();
+PrintWriter rp = new PrintWriter(s.getOutputStream());
+rp.println("What's up?");
+rp.flush();
+    
+String recvr = ot.readLine();
+    System.out.println ("Client",recvr);
+    
 }
 }
 }
