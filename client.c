@@ -1,35 +1,62 @@
-#include <stdio.h> 
-#include <sys/socket.h> 
-#include <stdlib.h> 
-#include <netinet/in.h> 
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
-#include <arpa/inet.h>
+#include <string.h>
 #include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h> 
 
-int main()
-{ 
-   char server_msg [256]="Hi";
-   int net_socket;
-   net_socket = socket (AF_INET,SOCK,STREAM,0);
-   
-   struct sockaddr_in server_address;
-   server_address.sin_family=AF_INET;
-   server_address.sin_port=htons(8080);
-   server_address.sin_addr.s_addr=ip address;
-   
-   int status=connect(net_socket,(struct sockaddr *) &server_address, sizeof (server_address));
-   if (status== -1)
-{ 
-    println ("There was an error %s\n");
+void error(const char *msg)
+{
+    perror(msg);
+    exit(0);
 }
-
-   send (net_socket,server_msg,sizeof(server_msg), 0);
+int main(int argc, char *argv[])
+{
+    int sockfd, portno, n;
+    struct sockaddr_in serv_addr;
+    struct hostent *server;
+    char buffer[256];
    
-   char server_response[256];
-   recv(net_socket, &server_response, sizeof(server_response),0);
-   
-   println ("Server message : %s\n", server_response);
-   close(net_socket);
-   
-    return 0; 
-} 
+    if (argc < 3) {
+       fprintf(stderr,"usage %s hostname port\n", argv[0]);
+       exit(0);
+    }
+    portno = atoi(argv[2]);
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) 
+        error("ERROR OPENING SOCKET");
+    server = gethostbyname(argv[1]);
+    if (server == NULL) {
+        fprintf(stderr,"ERROR. NO SUCH HOST\n");
+        exit(0);
+    }
+    bzero((char *) &serv_addr, sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;
+    bcopy((char *)server->h_addr, 
+         (char *)&serv_addr.sin_addr.s_addr,
+         server->h_length);
+    serv_addr.sin_port = htons(portno);
+    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) 
+        error("ERROR CONNECTING");
+    printf("CLIENT: ");
+    while(1)
+    {
+        bzero(buffer,256);
+        fgets(buffer,255,stdin);
+        n = write(sockfd,buffer,strlen(buffer));
+        if (n < 0) 
+             error("ERROR WRITING TO SOCKET");
+        bzero(buffer,256);
+        n = read(sockfd,buffer,255);
+        if (n < 0) 
+             error("ERROR READING FROM SOCKET");
+        printf("SERVER: %s\n",buffer);
+        int i = strncmp("BYE" , buffer , 3);
+        if(i == 0)
+               break;
+    }
+    close(sockfd);
+    return 0;
+}
